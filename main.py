@@ -1,9 +1,11 @@
 from langchain_core.prompts import PromptTemplate
-from llm import get_llm
+from llm import get_llm,get_ollama_llm
 
 def main():
 
-    llm = get_llm()
+    #llm = get_llm()
+    
+    llm =get_ollama_llm()
     
     prompt_message="Tell me a startup idea that can help me half a million dollars quickly and tell me which llm(exact name) am i talking to, and is it free"
     

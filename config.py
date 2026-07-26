@@ -3,7 +3,8 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 
 class Settings(BaseSettings):
     openrouter_api_key: str
-    model:str
+    openrouter_model:str
+    ollama_model:str
 
     model_config = SettingsConfigDict(
         env_file=".env",
