@@ -1,17 +1,14 @@
 from langchain_core.prompts import PromptTemplate
 from llm import get_llm,get_ollama_llm
-from langfuse.langchain import CallbackHandler
-from langfuse import get_client
-import os
-from config import settings
+
+
+from tracer import get_tracer,flush_tracer
+
+
 
 def main():
 
-    os.environ.setdefault("LANGFUSE_PUBLIC_KEY", settings.langfuse_public_key)
-    os.environ.setdefault("LANGFUSE_SECRET_KEY", settings.langfuse_secret_key)
-    os.environ.setdefault("LANGFUSE_HOST", settings.langfuse_base_url)
-
-    langfuse_handler = CallbackHandler()
+    tracing_handler = get_tracer()
 
     #llm = get_llm()
     
@@ -25,11 +22,10 @@ def main():
         )
 
     chain=input_prompt_template | llm # langchain expression language first part(promptTemplate to be fed to second part(llm))
-    response = chain.invoke({}, config={"callbacks": [langfuse_handler]}  )
+    response = chain.invoke({}, config={"callbacks": [tracing_handler]}  )
 
     print(response.content)
 
-    langfuse = get_client()
-    langfuse.flush()
+    flush_tracer()
 
 main()
