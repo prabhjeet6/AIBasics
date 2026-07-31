@@ -8,6 +8,7 @@ class Settings(BaseSettings):
     langfuse_public_key:str
     langfuse_base_url:str
     langfuse_secret_key:str
+    tavily_api_key:str
 
     model_config = SettingsConfigDict(
         env_file=".env",
