@@ -9,6 +9,9 @@ class Settings(BaseSettings):
     langfuse_base_url:str
     langfuse_secret_key:str
     tavily_api_key:str
+    pinecone_api_key:str
+    embedding_model_name:str
+    index_name:str
 
     model_config = SettingsConfigDict(
         env_file=".env",
