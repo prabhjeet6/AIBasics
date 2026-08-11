@@ -12,7 +12,12 @@ class Settings(BaseSettings):
     pinecone_api_key:str
     embedding_model_name:str
     index_name:str
-
+    embedding_model_name:str
+    text_splitter_chunk_size:int
+    text_splitter_chunk_overlap:int
+    chunking_strategy:str
+    max_characters:int
+    file_path:str
     model_config = SettingsConfigDict(
         env_file=".env",
         env_file_encoding="utf-8",

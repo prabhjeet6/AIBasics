@@ -25,7 +25,7 @@ from config import settings
 # connect to vector store providing embedding model according to the configuration provided in the
 # index created in pinecone as inputs
 def get_embeddings_model()->HuggingFaceEmbeddings:
-    return HuggingFaceEmbeddings(model_name="BAAI/bge-large-en-v1.5")
+    return HuggingFaceEmbeddings(model_name=settings.embedding_model_name)
 
 def get_vector_store()->VectorStore:
     embeddings=get_embeddings_model()
@@ -37,7 +37,7 @@ def get_vector_store()->VectorStore:
 # overlap of 10 to 20 percent
 
 def get_text_splitter()->TextSplitter:
-    return CharacterTextSplitter(chunk_size=1000, chunk_overlap=0)
+    return CharacterTextSplitter(chunk_size=settings.text_splitter_chunk_size, chunk_overlap=settings.text_splitter_chunk_overlap)
 
 def get_loader()->BaseLoader:
-    return UnstructuredLoader ("./document.txt", chunking_strategy="basic", max_characters=1000000)
+    return UnstructuredLoader (file_path=settings.file_path, chunking_strategy=settings.chunking_strategy, max_characters=settings.max_characters)
