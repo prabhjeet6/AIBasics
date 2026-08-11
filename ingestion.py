@@ -1,16 +1,15 @@
 from langchain_pinecone import PineconeVectorStore
-from langchain_text_splitters import CharacterTextSplitter
-from langchain_unstructured import UnstructuredLoader
 
 from config import settings
-from ragutils import get_embeddings_model
+from ragutils import get_embeddings_model,get_text_splitter,get_loader
 
 if __name__ == "__main__":
     print("Processing Ingestion Pipeline:")
-    document_loader=UnstructuredLoader ("./document.txt", chunking_strategy="basic", max_characters=1000000)
+
+    document_loader=get_loader()
     document=document_loader.load()
 
-    text_splitter=CharacterTextSplitter(chunk_size=1000, chunk_overlap=0)
+    text_splitter=get_text_splitter()
     texts=text_splitter.split_documents(document)
 
     print(f"created {len(texts)} chunks")
