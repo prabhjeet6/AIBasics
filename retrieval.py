@@ -4,24 +4,19 @@ from operator import itemgetter
 from langchain_core.output_parsers import StrOutputParser
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.runnables import RunnablePassthrough
-from langchain_huggingface import HuggingFaceEmbeddings
 from langchain_pinecone import PineconeVectorStore
 
 
-from config import settings
 from agentutils import get_llm
-
-
+from ragutils import get_embeddings_model,get_vector_store
 
 # get the embedding model
-embeddings = HuggingFaceEmbeddings(model_name="BAAI/bge-large-en-v1.5")
-
+embeddings = get_embeddings_model()
 
 # get the frontier llm
 llm=get_llm()
 
-# connect to vector store providing embedding model and index created in pinecone as inputs
-vectorstore =PineconeVectorStore(index_name=settings.index_name, embedding=embeddings)
+vectorstore =get_vector_store()
 
 # retrieve top three results from the vector store
 retriever=vectorstore.as_retriever(search_kwargs={"k":3})

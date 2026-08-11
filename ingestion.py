@@ -1,10 +1,9 @@
-from langchain_huggingface import HuggingFaceEmbeddings
 from langchain_pinecone import PineconeVectorStore
 from langchain_text_splitters import CharacterTextSplitter
 from langchain_unstructured import UnstructuredLoader
 
 from config import settings
-
+from ragutils import get_embeddings_model
 
 if __name__ == "__main__":
     print("Processing Ingestion Pipeline:")
@@ -16,7 +15,7 @@ if __name__ == "__main__":
 
     print(f"created {len(texts)} chunks")
 
-    embeddings = HuggingFaceEmbeddings(model_name="BAAI/bge-large-en-v1.5")
+    embeddings = get_embeddings_model()
 
     PineconeVectorStore.from_documents(
         texts,
