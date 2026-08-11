@@ -11,9 +11,7 @@ from langchain_pinecone import PineconeVectorStore
 from config import settings
 from agentutils import get_llm
 
-import os
 
-os.environ["PINECONE_API_KEY"] = settings.pinecone_api_key
 
 # get the embedding model
 embeddings = HuggingFaceEmbeddings(model_name="BAAI/bge-large-en-v1.5")

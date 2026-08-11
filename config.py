@@ -1,5 +1,5 @@
 from pydantic_settings import BaseSettings, SettingsConfigDict
-
+import os
 
 class Settings(BaseSettings):
     openrouter_api_key: str
@@ -20,3 +20,11 @@ class Settings(BaseSettings):
 
 
 settings = Settings()
+
+os.environ.setdefault("TAVILY_API_KEY", settings.tavily_api_key)
+
+os.environ["PINECONE_API_KEY"] = settings.pinecone_api_key
+
+os.environ.setdefault("LANGFUSE_PUBLIC_KEY", settings.langfuse_public_key)
+os.environ.setdefault("LANGFUSE_SECRET_KEY", settings.langfuse_secret_key)
+os.environ.setdefault("LANGFUSE_HOST", settings.langfuse_base_url)

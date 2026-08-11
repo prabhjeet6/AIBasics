@@ -5,9 +5,6 @@ from langchain_unstructured import UnstructuredLoader
 
 from config import settings
 
-import os
-
-os.environ["PINECONE_API_KEY"] = settings.pinecone_api_key
 
 if __name__ == "__main__":
     print("Processing Ingestion Pipeline:")

@@ -22,7 +22,7 @@ from models import AgentResponse
 #Focus: Application execution and state management.
 #Supports: Loops, branching, retries, parallel execution, human approval, persistence.
 
-# original reAct Model involved resonaing and thought, it used to provide Action, mordern tool/function calling goes 
+# original reAct Model involved reasoning and thought, it used to provide Action, mordern tool/function calling goes
 # beyond thought and applies action through particular tools to get an observation
 
 def get_llm():
@@ -33,8 +33,8 @@ def get_llm():
     )
 
 # ollama is a tool that allows to run open weight models
-# langchain-ollama allows to integrate such models with lanchain framework
-# langchain is a framework to conviently use any model without changing design phylosiphy of your app
+# langchain-ollama allows to integrate such models with langchain framework
+# langchain is a framework to conveniently use any model without changing design philosophy of your app
 def get_ollama_llm():
     return ChatOllama(
         

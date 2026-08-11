@@ -1,10 +1,9 @@
 from tavily import TavilyClient
 from langchain.tools import tool
 from langchain_tavily import TavilySearch
-import os
 from config import settings
 
-os.environ.setdefault("TAVILY_API_KEY", settings.tavily_api_key)
+
 
 tavily_client=TavilyClient()
 
