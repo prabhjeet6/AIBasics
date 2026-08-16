@@ -27,9 +27,9 @@ from config import settings
 def get_embeddings_model()->HuggingFaceEmbeddings:
     return HuggingFaceEmbeddings(model_name=settings.embedding_model_name)
 
-def get_vector_store()->VectorStore:
+def get_vector_store(index_name:str)->VectorStore:
     embeddings=get_embeddings_model()
-    return PineconeVectorStore(index_name=settings.index_name, embedding=embeddings)
+    return PineconeVectorStore(index_name=index_name, embedding=embeddings)
 
 
 # With a chunk overlap of zero, the context might be lost, langchain's

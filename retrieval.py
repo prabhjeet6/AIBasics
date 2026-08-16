@@ -8,6 +8,7 @@ from langchain_core.runnables import RunnablePassthrough
 
 
 from agentutils import get_llm
+from config import  settings
 from ragutils import get_embeddings_model,get_vector_store
 
 # get the embedding model
@@ -16,7 +17,7 @@ embeddings = get_embeddings_model()
 # get the frontier llm
 llm=get_llm()
 
-vectorstore =get_vector_store()
+vectorstore =get_vector_store(settings.index_name)
 
 # retrieve top three results from the vector store
 retriever=vectorstore.as_retriever(search_kwargs={"k":3})
