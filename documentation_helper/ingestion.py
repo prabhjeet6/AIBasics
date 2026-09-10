@@ -1,79 +1,39 @@
-from langchain.tools import tool
-from typing import Dict, Any
+import asyncio
+import os
+import ssl
+from typing import Any,Dict,List
 
-from langchain.agents import create_agent
-from langchain_core.messages import ToolMessage
-from config import settings
+import certifi
 
-from agentutils import get_llm
+from langchain_classic.text_splitter import RecursiveCharacterTextSplitter
+from langchain_core.documents import Document
+from langchain_pinecone import PineconeVectorStore
+from langchain_tavily import (
+    TavilyCrawl,
+    TavilyExtract,
+    TavilyMap,
+    tavily_extract,
+    tavily_crawl,
+)
+from openrouter import embeddings
+from scipy._external.cobyqa import settings
+
+from config import Settings
 from ragutils import get_embeddings_model, get_vector_store
+from retrieval import vectorstore
 
-#TODO: currently it is picking document.txt instead of langchain documentation,
-# as it is by default using config value
+#from logger import (Colors,log_error,log_header,log_info_log_success,log_warning)
+
+# Configure SSL context to use certifi certificates
+ssl_context=ssl.create_default_context(cafile=certifi.where())
+os.environ["SSL_CERT_FILE"]=certifi.where()
+os.environ["REQUESTS_CA_BUNDLE"]=certifi.where()
+
+#TODO: pass correct index name
 embeddings=get_embeddings_model()
 vectorstore=get_vector_store(settings.index_name)
-model=get_llm()
 
-@tool
-def retrieve_context(query:str):
-    """
-    Retrieve relevant documentation to help answer user queries about LangChain.
-    """
-    retrieved_docs=vectorstore.as_retriever().invoke(query,k=4)
+tavily_extract=TavilyExtract(max_depth=5,max_breadth=20,max_pages=1000)
+tavily_map=TavilyMap()
+tavily_crawl=TavilyCrawl()
 
-    serialized="\n\n".join(
-        (f"Source:{doc.metadata.get('source','unknown')}\n\n"
-         f"Context:{doc.page_content}")
-        for doc in retrieved_docs
-    )
-
-    return serialized,retrieved_docs
-
-def run_agent_for_retrieval(query:str)-> dict[str, list[Any] | Any] | None:
-    """
-    Run the RAG pipeline to answer a query using retrieved documentation.
-
-    Args:
-        query: The user's question
-
-    Returns:
-        Dictionary containing:
-          - answer: The generated answer
-          - context: List of retrieved documents
-    """
-
-    system_prompt=(
-        " You are a helpful AI assistant that answers questions about Langchain documentation. "
-        " You have access to a tool that retrieves relevant documentation. "
-        " Use the tool to find relevant information before answering questions. "
-        " Always cite the sources you use in your answers "
-        " If you can not find the answer in the retrieved documentation, say so. "
-    )
-
-    agent=create_agent(model, tools=[retrieve_context],system_prompt=system_prompt)
-
-    messages=[{"role":"user","content":query}]
-
-    response=agent.invoke({"messages":messages})
-
-   # response is a dict, response["messages"] gives value corresponding to it
-   # messages is a list, response["messages"][-1] returns last element of the list
-    answer=response["messages"][-1].content
-
-    context_docs=[]
-    for message in response["messages"]:
-        if isinstance(message,ToolMessage) and hasattr(message,"artifact"):
-            if isinstance(message.artifact,list):
-                context_docs.extend(message.artifact)
-
-        return {
-            "answer":answer,
-            "context":context_docs,
-        }
-    return None
-
-
-if __name__ == "__main__":
-    result=run_agent_for_retrieval(query="What are Deep agents?")
-    print(result)
-    print("Complete")

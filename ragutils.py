@@ -24,8 +24,16 @@ from config import settings
 
 # connect to vector store providing embedding model according to the configuration provided in the
 # index created in pinecone as inputs
-def get_embeddings_model()->HuggingFaceEmbeddings:
-    return HuggingFaceEmbeddings(model_name=settings.embedding_model_name)
+
+# retry config is not needed as Model is locally cached
+def get_embeddings_model() -> HuggingFaceEmbeddings:
+    return HuggingFaceEmbeddings(
+        model_name=settings.embedding_model_name,
+        encode_kwargs={
+            "batch_size": 50,
+            "show_progress_bar": False,
+        },
+    )
 
 def get_vector_store(index_name:str)->VectorStore:
     embeddings=get_embeddings_model()
