@@ -31,7 +31,7 @@ def get_embeddings_model() -> HuggingFaceEmbeddings:
         model_name=settings.embedding_model_name,
         encode_kwargs={
             "batch_size": 50,
-            "show_progress_bar": False,
+
         },
     )
 

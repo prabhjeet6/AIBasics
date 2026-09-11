@@ -1,5 +1,5 @@
 from langchain.tools import tool
-from typing import  Any
+from typing import Any
 
 from langchain.agents import create_agent
 from langchain_core.messages import ToolMessage
@@ -8,28 +8,33 @@ from config import settings
 from agentutils import get_llm
 from ragutils import get_embeddings_model, get_vector_store
 
-#TODO: currently it is picking document.txt instead of langchain documentation,
-# as it is by default using config value
-embeddings=get_embeddings_model()
-vectorstore=get_vector_store(settings.index_name)
-model=get_llm()
+
+embeddings = get_embeddings_model()
+vectorstore = get_vector_store(settings.langchain_documentation_index_name)
+model = get_llm()
+
 
 @tool
-def retrieve_context(query:str):
+def retrieve_context(query: str):
     """
     Retrieve relevant documentation to help answer user queries about LangChain.
     """
-    retrieved_docs=vectorstore.as_retriever().invoke(query,k=4)
+    retriever = vectorstore.as_retriever(search_kwargs={"k": 4})
 
-    serialized="\n\n".join(
-        (f"Source:{doc.metadata.get('source','unknown')}\n\n"
-         f"Context:{doc.page_content}")
+    retrieved_docs = retriever.invoke(query)
+
+    serialized = "\n\n".join(
+        (
+            f"Source:{doc.metadata.get('source', 'unknown')}\n\n"
+            f"Context:{doc.page_content}"
+        )
         for doc in retrieved_docs
     )
 
-    return serialized,retrieved_docs
+    return serialized, retrieved_docs
 
-def run_agent_for_retrieval(query:str)-> dict[str, list[Any] | Any] | None:
+
+def run_agent_for_retrieval(query: str) -> dict[str, list[Any] | Any] | None:
     """
     Run the RAG pipeline to answer a query using retrieved documentation.
 
@@ -42,7 +47,7 @@ def run_agent_for_retrieval(query:str)-> dict[str, list[Any] | Any] | None:
           - context: List of retrieved documents
     """
 
-    system_prompt=(
+    system_prompt = (
         " You are a helpful AI assistant that answers questions about Langchain documentation. "
         " You have access to a tool that retrieves relevant documentation. "
         " Use the tool to find relevant information before answering questions. "
@@ -50,30 +55,30 @@ def run_agent_for_retrieval(query:str)-> dict[str, list[Any] | Any] | None:
         " If you can not find the answer in the retrieved documentation, say so. "
     )
 
-    agent=create_agent(model, tools=[retrieve_context],system_prompt=system_prompt)
+    agent = create_agent(model, tools=[retrieve_context], system_prompt=system_prompt)
 
-    messages=[{"role":"user","content":query}]
+    messages = [{"role": "user", "content": query}]
 
-    response=agent.invoke({"messages":messages})
+    response = agent.invoke({"messages": messages})
 
-   # response is a dict, response["messages"] gives value corresponding to it
-   # messages is a list, response["messages"][-1] returns last element of the list
-    answer=response["messages"][-1].content
+    # response is a dict, response["messages"] gives value corresponding to it
+    # messages is a list, response["messages"][-1] returns last element of the list
+    answer = response["messages"][-1].content
 
-    context_docs=[]
+    context_docs = []
     for message in response["messages"]:
-        if isinstance(message,ToolMessage) and hasattr(message,"artifact"):
-            if isinstance(message.artifact,list):
+        if isinstance(message, ToolMessage) and hasattr(message, "artifact"):
+            if isinstance(message.artifact, list):
                 context_docs.extend(message.artifact)
 
         return {
-            "answer":answer,
-            "context":context_docs,
+            "answer": answer,
+            "context": context_docs,
         }
     return None
 
 
 if __name__ == "__main__":
-    result=run_agent_for_retrieval(query="What are Deep agents?")
+    result = run_agent_for_retrieval(query="What are Deep agents?")
     print(result)
-    print("Complete")
+    print("Retrieval Ends")

@@ -27,6 +27,7 @@ class Settings(BaseSettings):
         env_file=BASE_DIR / ".env",
         env_file_encoding="utf-8",
     )
+    langchain_documentation_index_name:str
 
 
 settings = Settings()
