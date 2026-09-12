@@ -1,22 +1,17 @@
 import asyncio
-import os
-import ssl
-from typing import Any, Dict, List
 
-import certifi
+from typing import  List
+
+
 
 from langchain_classic.text_splitter import RecursiveCharacterTextSplitter
 from langchain_core.documents import Document
-from langchain_pinecone import PineconeVectorStore
 from langchain_tavily import TavilyCrawl,TavilyExtract,TavilyMap
 
 from config import  settings
 from ragutils import get_embeddings_model, get_vector_store
 
-# Configure SSL context to use certifi certificates
-ssl_context=ssl.create_default_context(cafile=certifi.where())
-os.environ["SSL_CERT_FILE"]=certifi.where()
-os.environ["REQUESTS_CA_BUNDLE"]=certifi.where()
+
 
 embeddings=get_embeddings_model()
 vectorstore=get_vector_store(settings.langchain_documentation_index_name)

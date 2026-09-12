@@ -3,6 +3,9 @@ from pathlib import Path
 from pydantic_settings import BaseSettings, SettingsConfigDict
 import os
 
+import certifi
+import ssl
+
 # find the directory containing this file
 BASE_DIR = Path(__file__).resolve().parent
 
@@ -39,3 +42,8 @@ os.environ["PINECONE_API_KEY"] = settings.pinecone_api_key
 os.environ.setdefault("LANGFUSE_PUBLIC_KEY", settings.langfuse_public_key)
 os.environ.setdefault("LANGFUSE_SECRET_KEY", settings.langfuse_secret_key)
 os.environ.setdefault("LANGFUSE_HOST", settings.langfuse_base_url)
+
+# Configure SSL context to use certifi certificates
+ssl_context=ssl.create_default_context(cafile=certifi.where())
+os.environ["SSL_CERT_FILE"]=certifi.where()
+os.environ["REQUESTS_CA_BUNDLE"]=certifi.where()
