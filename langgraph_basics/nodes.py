@@ -1,4 +1,3 @@
-from langchain_classic.evaluation.scoring.prompt import SYSTEM_MESSAGE
 from langchain_core.tools import tool
 from langchain_tavily import TavilySearch
 from langgraph.graph import MessagesState
@@ -25,7 +24,13 @@ def run_agent_reasoning(state:MessagesState)->MessagesState:
     Run the agent reasoning node
 
     """
-    response= get_llm().invoke([{"role":"system","content":SYSTEM_MESSAGE},*state["messages"]])
+    # Here * means, unpack all the messages into this list being passed to llm, so everytime
+    # run_agent_reasoning(...) runs, llm sees the entire conversation history
+    response= llm.invoke([{"role":"system","content":SYSTEM_MESSAGE},*state["messages"]])
     return {"messages":[response]}
 
+# ToolNode is the LangGraph component that takes the LLM's requested tool call and actually
+# runs the corresponding Python tool.
+# ToolNode receives AI message from llm which has reasoned to execute a particular tool,
+# But, actual tool execution happens through ToolNode
 tool_node=ToolNode(tools)
