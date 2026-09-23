@@ -29,6 +29,9 @@ def should_continue(state:MessageGraph):
         return END
     return REFLECT
 
+builder.add_conditional_edges(GENERATE, should_continue)
+builder.add_edge(REFLECT, GENERATE)
+
 graph=builder.compile()
 print(graph.get_graph().draw_mermaid())
 graph.get_graph().print_ascii()
@@ -51,4 +54,9 @@ if __name__ == "__main__":
         ]
     }
     response = graph.invoke(inputs)
-    print(response)
+#   print(response)
+    for i, message in enumerate(response["messages"], 1):
+        print("\n" + "=" * 80)
+        print(f"MESSAGE {i}: {type(message).__name__}")
+        print("=" * 80)
+        print(message.content)
