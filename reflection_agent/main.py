@@ -1,4 +1,4 @@
-from typing import TypedDict,Annotated
+from typing import TypedDict,Annotated,Literal
 
 from langchain_core.messages import BaseMessage,HumanMessage
 from langgraph.graph import END,StateGraph
@@ -12,6 +12,7 @@ class MessageGraph (TypedDict):
 REFLECT="reflect"
 GENERATE="generate"
 
+# A LangGraph node is just a python function with a state as an argument
 def generation_node(state:MessageGraph):
     return {"messages":[generate_chain.invoke({"messages":state["messages"]})]}
 
@@ -24,11 +25,12 @@ builder.add_node(GENERATE,generation_node)
 builder.add_node(REFLECT,reflection_node)
 builder.set_entry_point(GENERATE)
 
-def should_continue(state:MessageGraph):
+def should_continue(state:MessageGraph) -> Literal["reflect", "__end__"]:
     if(len(state["messages"])>6):
         return END
     return REFLECT
-
+# As it is conditional edge, if it fails, it goes to END, otherwise, goes to REFLECT
+# , after critiquing goes to GENERATE, which goes to should_continue, forming a feedback loop
 builder.add_conditional_edges(GENERATE, should_continue)
 builder.add_edge(REFLECT, GENERATE)
 
