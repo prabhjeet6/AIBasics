@@ -6,7 +6,7 @@ JsonOutputToolsParser,
 PydanticToolsParser
 )
 from langchain_core.prompts import ChatPromptTemplate,MessagesPlaceholder
-from schemas import AnswerQuestion,ReviseAnswer
+from .schemas import AnswerQuestion,ReviseAnswer
 
 from agentutils import get_llm
 
@@ -43,7 +43,7 @@ first_responder_prompt_template=actor_prompt_template.partial(
 # feed the first responder prompt to llm.
 # since AnswerQuestion is passed to bind_tools(...), this pydantic model gets converted into a tool.
 first_responder=first_responder_prompt_template | llm.bind_tools(
-    tools=[AnswerQuestion],tool_choice=AnswerQuestion)
+    tools=[AnswerQuestion],tool_choice="AnswerQuestion")
 
 # Revise prompt
 revise_instructions=""" Revise your previous answer using new information.

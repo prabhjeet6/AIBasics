@@ -2,7 +2,7 @@ from langchain_core.tools import StructuredTool
 from langchain_tavily import TavilySearch, tavily_search
 
 from langgraph.prebuilt import ToolNode
-from schemas import AnswerQuestion,ReviseAnswer
+from .schemas import AnswerQuestion,ReviseAnswer
 
 tavily_tool=TavilySearch(max_results=5)
 
