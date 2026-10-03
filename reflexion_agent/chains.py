@@ -10,10 +10,14 @@ from schemas import AnswerQuestion,ReviseAnswer
 
 from agentutils import get_llm
 
+# get the llm
 llm=get_llm()
+
+# Get pydantic and Json Parsers
 parser=JsonOutputToolsParser(return_id=True)
 parser_pydantic=PydanticToolsParser(tools=[AnswerQuestion])
 
+# System Prompt for a dynamic instruction,requesting to reflect and critique the answer.
 actor_prompt_template=ChatPromptTemplate.from_messages(
     [(
         "system",
@@ -31,13 +35,17 @@ actor_prompt_template=ChatPromptTemplate.from_messages(
     ]
 ).partial(time=lambda: datetime.date.today().isoformat(),)
 
+# Prompt to get first response against Actor Prompt above
 first_responder_prompt_template=actor_prompt_template.partial(
     first_instruction="Provide a detailed 250 word answer."
 )
 
+# feed the first responder prompt to llm.
+# since AnswerQuestion is passed to bind_tools(...), this pydantic model gets converted into a tool.
 first_responder=first_responder_prompt_template | llm.bind_tools(
     tools=[AnswerQuestion],tool_choice=AnswerQuestion)
 
+# Revise prompt
 revise_instructions=""" Revise your previous answer using new information.
 - You should use previous critique to add important information to your answer.
 - You MUST include numerical citations in your revised answer to ensure it can be verified.
@@ -47,13 +55,16 @@ revise_instructions=""" Revise your previous answer using new information.
 - You should use the previous critique to remove superfluous information from your answer and make SURE it has not more than 250 words.
 
 """
-revisor=actor_prompt_template.partial(first_instruction=revise_instructions) | llm.bind_tools(tools=[ReviseAnswer],tool_choice="ReviseAnswer")
+
+revisor=(actor_prompt_template.partial(first_instruction=revise_instructions) |
+         llm.bind_tools(tools=[ReviseAnswer],tool_choice="ReviseAnswer"))
 
 if __name__=="__main__":
     human_message=HumanMessage(
         content="Write about AI powered SOC/autonomous soc problem domain,"
         "list startups that do that and raised capital."
     )
+    # HumanMessage is passed to first response prompt template here
     chain=(first_responder_prompt_template|
            llm.bind_tools(tools=[AnswerQuestion],tool_choice="AnswerQuestion")|
            parser_pydantic)

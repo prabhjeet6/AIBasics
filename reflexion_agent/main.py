@@ -7,6 +7,10 @@ from tool_executor import execute_tools
 
 MAX_ITERATIONS = 2
 
+# A reflection agent reviews and polishes its current work in a single session, while a Reflexion agent stores past mistakes
+# in memory to learn and improve across completely separate trials or attempts
+# This is not purely Reflexion Agent
+
 def draft_node(state:MessagesState):
     """Draft the initial response."""
     response=first_responder.invoke({"messages":state["messages"]})
