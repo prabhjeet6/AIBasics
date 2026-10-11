@@ -37,10 +37,10 @@ This approach creates a self-improving system that produces higher quality outpu
 
 The reflection agent is built with two primary nodes:
 
-1. **Generation Node** (in `chains.py`):
+1. **Generation Node** (in ``):
    - Uses a specialized prompt for creating Twitter content
    - Responds to critique by refining previously generated content
 
-2. **Reflection Node** (in `chains.py`):
+2. **Reflection Node** (in `state.py`):
    - Critiques the generated content against quality criteria
    - Provides specific recommendations for improvement

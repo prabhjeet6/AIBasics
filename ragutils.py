@@ -49,3 +49,4 @@ def get_text_splitter()->TextSplitter:
 
 def get_loader()->BaseLoader:
     return UnstructuredLoader (file_path=settings.file_path, chunking_strategy=settings.chunking_strategy, max_characters=settings.max_characters)
+
