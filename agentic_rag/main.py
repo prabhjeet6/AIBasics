@@ -1,4 +1,4 @@
-from graph.graph import _app
+from graph.graph import app
 
 if __name__ == '__main__':
     print("Advanced RAG")
