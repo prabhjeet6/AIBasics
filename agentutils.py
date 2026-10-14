@@ -4,7 +4,7 @@ from langchain_ollama import ChatOllama
 from langchain.agents import create_agent
 from langchain_tavily import TavilySearch
 
-from tooling import search
+
 from config import settings
 from models import AgentResponse
 

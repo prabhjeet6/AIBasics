@@ -3,6 +3,7 @@ from langchain_text_splitters import RecursiveCharacterTextSplitter
 
 from langchain_unstructured import UnstructuredLoader
 
+from config import settings
 from ragutils import get_embeddings_model
 
 urls = [
@@ -28,8 +29,17 @@ text_splitter=RecursiveCharacterTextSplitter.from_tiktoken_encoder(
 
 doc_splits=text_splitter.split_documents(docs_list)
 
+embeddings = get_embeddings_model()
+
+PineconeVectorStore.from_documents(
+        doc_splits,
+        embeddings,
+        index_name=settings.index_name,
+        pinecone_api_key=settings.pinecone_api_key
+)
+
 retriever = PineconeVectorStore(
-    index_name="rag-pinecone", # TODO correct/new index
+    index_name=settings.agentic_rag_index_name,
     embedding=get_embeddings_model(),
 ).as_retriever(
     search_kwargs={"k": 4}

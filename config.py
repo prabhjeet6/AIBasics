@@ -19,6 +19,7 @@ class Settings(BaseSettings):
     tavily_api_key:str
     pinecone_api_key:str
     embedding_model_name:str
+    agentic_rag_index_name:str
     index_name:str
     embedding_model_name:str
     text_splitter_chunk_size:int

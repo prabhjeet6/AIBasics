@@ -1,7 +1,7 @@
 from tavily import TavilyClient
 from langchain.tools import tool
 from langchain_tavily import TavilySearch
-from config import settings
+from  import settings
 
 
 
