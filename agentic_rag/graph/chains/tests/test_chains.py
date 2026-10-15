@@ -1,14 +1,14 @@
 from pprint import pprint
 
-from graph.chains.retrieval_grader import GradeDocuments,retrieval_grader
+from agentic_rag.graph.chains.retrieval_grader import GradeDocuments,retrieval_grader
 
 from agentic_rag.graph.chains.generation import generation_chain
 from agentic_rag.graph.chains.hallucination_grader import (
     GradeHallucinations,
     hallucination_grader,
 )
-from ingestion import retriever
-from graph.chains.router import question_router, RouteQuery
+from agentic_rag.ingestion import retriever
+from agentic_rag.graph.chains.router import question_router, RouteQuery
 
 def test_retrival_grader_answer_yes()->None:
     question="agent memory"
