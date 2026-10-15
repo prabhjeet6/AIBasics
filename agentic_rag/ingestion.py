@@ -19,6 +19,10 @@ docs=[
 ]
 
 # it is a list comprehension that flattens a nested list.
+# List flattening is needed because each call to UnstructuredLoader.load() returns a list of documents, so your list
+# comprehension creates a nested list of documents. But split_documents() expects a flat list of Document
+# objects.
+
 docs_list=[
     item for sublist in docs for item in sublist
 ]
@@ -31,6 +35,7 @@ doc_splits=text_splitter.split_documents(docs_list)
 
 embeddings = get_embeddings_model()
 
+# ingest
 PineconeVectorStore.from_documents(
         doc_splits,
         embeddings,
@@ -38,6 +43,7 @@ PineconeVectorStore.from_documents(
         pinecone_api_key=settings.pinecone_api_key
 )
 
+# retrieve
 retriever = PineconeVectorStore(
     index_name=settings.agentic_rag_index_name,
     embedding=get_embeddings_model(),

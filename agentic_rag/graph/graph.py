@@ -8,8 +8,6 @@ from agentic_rag.graph.nodes import generate, grade_documents, retrieve, web_sea
 from agentic_rag.graph.state import GraphState
 
 
-
-
 def decide_to_generate(state):
     print("---ASSESS GRADED DOCUMENTS---")
 
