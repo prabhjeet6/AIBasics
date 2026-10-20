@@ -9,4 +9,5 @@ async def get_weather(location: str) -> str:
     return "Hot as hell"
 
 if __name__ == "__main__":
+    # uses the older HTTP-based SSE transport to communicate with clients.
     mcp.run(transport="sse")
