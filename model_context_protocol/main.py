@@ -1,5 +1,5 @@
 import asyncio
-import os
+
 from langchain_mcp_adapters.tools import load_mcp_tools
 from langgraph.prebuilt import create_react_agent
 from mcp import ClientSession,StdioServerParameters
@@ -13,7 +13,7 @@ llm=get_llm()
 
 stdio_server_params=StdioServerParameters(
     command="python",
-    args=["math_server.py"],
+    args=["servers/math_server.py"],
 )
 
 async def main():
